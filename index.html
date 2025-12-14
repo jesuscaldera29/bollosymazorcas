@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>BOLLOS_Y_MAZORCAS</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <style>
+    :root{
+      --bg:#0b1220; --card:#0f172a; --line:#1f2a44; --txt:#e5e7eb; --muted:#94a3b8;
+      --pri:#22c55e; --bad:#ef4444; --warn:#f59e0b; --btn:#111827;
+      --radius:16px;
+    }
+    *{box-sizing:border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;}
+    body{margin:0; background:linear-gradient(180deg,#070b16,#0b1220); color:var(--txt);}
+    header{
+      position:sticky; top:0; z-index:10;
+      background:rgba(15,23,42,.9); backdrop-filter: blur(8px);
+      border-bottom:1px solid var(--line);
+      padding:12px 14px;
+      display:flex; align-items:center; gap:10px; justify-content:space-between;
+    }
+    .brand{display:flex; flex-direction:column; line-height:1.1}
+    .brand b{font-size:14px}
+    .brand span{font-size:12px; color:var(--muted)}
+    .row{display:flex; gap:10px; align-items:center}
+    .pill{padding:6px 10px; border:1px solid var(--line); border-radius:999px; color:var(--muted); font-size:12px}
+    main{max-width:1100px; margin:0 auto; padding:14px; padding-bottom:90px}
+    nav{
+      position:fixed; bottom:0; left:0; right:0;
+      background:rgba(15,23,42,.95);
+      border-top:1px solid var(--line);
+      padding:10px;
+      display:flex; gap:8px; justify-content:space-around;
+    }
+    nav button{
+      flex:1;
+      background:transparent; border:1px solid transparent;
+      color:var(--muted);
+      padding:10px 8px;
+      border-radius:12px;
+      font-size:12px;
+    }
+    nav button.active{color:var(--txt); border-color:var(--line); background:rgba(17,24,39,.6)}
+    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:12px}
+    .card{
+      grid-column: span 12;
+      background:rgba(15,23,42,.85);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .card h2{margin:0 0 8px 0; font-size:16px}
+    .muted{color:var(--muted); font-size:13px}
+    .btn{
+      background:var(--btn); color:var(--txt);
+      border:1px solid var(--line);
+      padding:10px 12px; border-radius:12px;
+      cursor:pointer; font-weight:600;
+    }
+    .btn.pri{background:rgba(34,197,94,.15); border-color:rgba(34,197,94,.35)}
+    .btn.bad{background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.35)}
+    .btn.warn{background:rgba(245,158,11,.12); border-color:rgba(245,158,11,.35)}
+    .btn:disabled{opacity:.5; cursor:not-allowed}
+    .input, select, textarea{
+      width:100%; background:#0b1220; color:var(--txt);
+      border:1px solid var(--line); border-radius:12px;
+      padding:10px 12px; outline:none;
+    }
+    label{font-size:12px; color:var(--muted)}
+    .two{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    .three{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px}
+    @media (max-width: 860px){
+      .two,.three{grid-template-columns:1fr}
+    }
+    table{width:100%; border-collapse:collapse; overflow:hidden}
+    th,td{padding:10px; border-bottom:1px solid var(--line); font-size:13px; text-align:left}
+    th{color:var(--muted); font-weight:600}
+    .tag{padding:4px 8px; border-radius:999px; border:1px solid var(--line); font-size:12px; color:var(--muted); text-decoration:none; display:inline-block}
+    .tag.good{border-color:rgba(34,197,94,.35); color:#86efac}
+    .tag.bad{border-color:rgba(239,68,68,.35); color:#fca5a5}
+    .tag.warn{border-color:rgba(245,158,11,.35); color:#fcd34d}
+    .split{display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+    .right{margin-left:auto}
+    .hidden{display:none!important}
+    .notice{
+      padding:10px 12px; border-radius:12px;
+      border:1px dashed var(--line); color:var(--muted);
+      background:rgba(17,24,39,.35)
+    }
+    .mapbox{height:380px; border-radius:16px; overflow:hidden; border:1px solid var(--line); background:#0b1220}
+    .kpi{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+    .kpi .k{padding:12px; border:1px solid var(--line); border-radius:14px; background:rgba(17,24,39,.35)}
+    .k b{display:block; font-size:16px}
+    .k span{font-size:12px; color:var(--muted)}
+    @media (max-width: 960px){ .kpi{grid-template-columns:repeat(2,1fr)} }
+
+    /* Route builder panel inside map */
+    .panel{
+      margin-top:10px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      overflow:hidden;
+      background:rgba(17,24,39,.35);
+    }
+    .panel-head{
+      padding:10px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom:1px solid rgba(31,42,68,.6);
+    }
+    .panel-body{padding:10px 12px}
+    .checkrow{
+      display:flex; gap:10px; align-items:center;
+      padding:8px 6px; border-bottom:1px solid rgba(31,42,68,.4);
+    }
+    .checkrow:last-child{border-bottom:none}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="row">
+      <div class="brand">
+        <b>BOLLOS_Y_MAZORCAS</b>
+        <span id="subTitle">PWA offline-first</span>
+      </div>
+      <span id="onlinePill" class="pill">⏳</span>
+    </div>
+
+    <div class="row">
+      <span id="userPill" class="pill hidden"></span>
+      <button id="btnLogout" class="btn hidden">Salir</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- LOGIN -->
+    <section id="viewLogin" class="card">
+      <h2>Iniciar sesión</h2>
+      <p class="muted">Admin fijo: <b>admin@bollos.com</b> / <b>12345</b>. Crea vendedores desde Admin.</p>
+      <div class="two">
+        <div>
+          <label>Email</label>
+          <input id="loginEmail" class="input" placeholder="correo@..." autocomplete="username">
+        </div>
+        <div>
+          <label>Contraseña</label>
+          <input id="loginPass" type="password" class="input" placeholder="•••••" autocomplete="current-password">
+        </div>
+      </div>
+      <div class="split" style="margin-top:12px">
+        <button id="btnLogin" class="btn pri">Entrar</button>
+        <span id="loginMsg" class="muted"></span>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="viewDash" class="hidden">
+      <div class="grid">
+        <div class="card">
+          <div class="split">
+            <div>
+              <h2>Panel</h2>
+              <div class="muted">Ventas, cobros, créditos y utilidad estimada.</div>
+            </div>
+            <div class="row">
+              <button class="btn" id="btnCSV">Exportar CSV</button>
+              <button class="btn warn" id="btnSync">Sincronizar</button>
+            </div>
+          </div>
+
+          <div class="kpi" style="margin-top:12px">
+            <div class="k"><span>Ventas hoy</span><b id="kSalesToday">$0</b></div>
+            <div class="k"><span>Cobrado hoy</span><b id="kPaidToday">$0</b></div>
+            <div class="k"><span>Créditos pendientes</span><b id="kPending">$0</b></div>
+            <div class="k"><span>Utilidad estimada</span><b id="kProfit">$0</b></div>
+          </div>
+
+          <div style="margin-top:12px" class="notice" id="dashNote"></div>
+        </div>
+
+        <div class="card">
+          <h2>Acciones rápidas</h2>
+          <div class="three">
+            <button class="btn pri" data-nav="sales">Nueva venta</button>
+            <button class="btn pri" data-nav="payments">Nuevo abono</button>
+            <button class="btn pri" data-nav="map">Mapa cobros</button>
+          </div>
+          <div class="three" style="margin-top:10px">
+            <button class="btn" data-nav="routes">Ruta de hoy</button>
+            <button class="btn" data-nav="customers">Clientes</button>
+            <button class="btn" data-nav="products">Productos</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="viewProducts" class="card hidden">
+      <div class="split">
+        <div>
+          <h2>Productos</h2>
+          <div class="muted">Solo Admin puede editar productos y costos.</div>
+        </div>
+        <button id="btnNewProduct" class="btn pri">+ Producto</button>
+      </div>
+
+      <div id="productForm" class="hidden" style="margin-top:12px">
+        <div class="two">
+          <div>
+            <label>Nombre</label>
+            <input id="pName" class="input" placeholder="Ej: Bollo">
+          </div>
+          <div>
+            <label>Precio</label>
+            <input id="pPrice" class="input" type="number" min="0" step="1" placeholder="1000">
+          </div>
+        </div>
+        <div class="two" style="margin-top:10px">
+          <div>
+            <label>Costo unitario (opcional, para utilidad)</label>
+            <input id="pCost" class="input" type="number" min="0" step="1" placeholder="Ej: 600">
+          </div>
+          <div>
+            <label>Activo</label>
+            <select id="pActive" class="input">
+              <option value="1">Sí</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:10px">
+          <label>Descripción (opcional)</label>
+          <textarea id="pDesc" class="input" rows="2" placeholder="Notas..."></textarea>
+        </div>
+        <div class="split" style="margin-top:10px">
+          <button id="btnSaveProduct" class="btn pri">Guardar</button>
+          <button id="btnCancelProduct" class="btn">Cancelar</button>
+          <button id="btnDeleteProduct" class="btn bad right">Eliminar</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px; overflow:auto">
+        <table>
+          <thead>
+          <tr><th>Nombre</th><th>Precio</th><th>Costo</th><th>Estado</th><th></th></tr>
+          </thead>
+          <tbody id="productTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CUSTOMERS -->
+    <section id="viewCustomers" class="card hidden">
+      <div class="split">
+        <div>
+          <h2>Clientes</h2>
+          <div class="muted">Guarda GPS del cliente para cobrar más fácil.</div>
+        </div>
+        <button id="btnNewCustomer" class="btn pri">+ Cliente</button>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <input id="custSearch" class="input" placeholder="Buscar por nombre/teléfono/dirección...">
+        <select id="custFilterDebt" class="input">
+          <option value="all">Todos</option>
+          <option value="debt">Solo con deuda</option>
+          <option value="ok">Al día</option>
+        </select>
+      </div>
+
+      <div id="customerForm" class="hidden" style="margin-top:12px">
+        <div class="two">
+          <div><label>Nombre</label><input id="cName" class="input"></div>
+          <div><label>Teléfono</label><input id="cPhone" class="input"></div>
+        </div>
+        <div class="two" style="margin-top:10px">
+          <div><label>Barrio/Dirección</label><input id="cAddr" class="input"></div>
+          <div><label>Referencia</label><input id="cRef" class="input"></div>
+        </div>
+        <div style="margin-top:10px">
+          <label>Notas</label>
+          <textarea id="cNotes" class="input" rows="2"></textarea>
+        </div>
+
+        <div class="two" style="margin-top:10px">
+          <div>
+            <label>Lat</label>
+            <input id="cLat" class="input" placeholder="GPS lat">
+          </div>
+          <div>
+            <label>Lng</label>
+            <input id="cLng" class="input" placeholder="GPS lng">
+          </div>
+        </div>
+
+        <div class="split" style="margin-top:10px">
+          <button id="btnGetGPSCustomer" class="btn">📍 Guardar ubicación aquí</button>
+          <span class="muted" id="gpsMsg"></span>
+        </div>
+
+        <div class="split" style="margin-top:10px">
+          <button id="btnSaveCustomer" class="btn pri">Guardar</button>
+          <button id="btnCancelCustomer" class="btn">Cancelar</button>
+          <button id="btnDeleteCustomer" class="btn bad right">Eliminar</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px; overflow:auto">
+        <table>
+          <thead>
+          <tr><th>Cliente</th><th>Contacto</th><th>Dirección</th><th>Estado</th><th></th></tr>
+          </thead>
+          <tbody id="customerTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SALES -->
+    <section id="viewSales" class="card hidden">
+      <div class="split">
+        <div>
+          <h2>Nueva venta</h2>
+          <div class="muted">Contado o Crédito. Total automático.</div>
+        </div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div>
+          <label>Cliente</label>
+          <select id="saleCustomer" class="input"></select>
+        </div>
+        <div>
+          <label>Tipo</label>
+          <select id="saleType" class="input">
+            <option value="cash">Contado</option>
+            <option value="credit">Crédito</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div>
+          <label>Producto</label>
+          <select id="saleProduct" class="input"></select>
+        </div>
+        <div>
+          <label>Cantidad</label>
+          <input id="saleQty" class="input" type="number" min="1" step="1" value="1">
+        </div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div>
+          <label>Total</label>
+          <input id="saleTotal" class="input" disabled>
+        </div>
+        <div>
+          <label>Nota (opcional)</label>
+          <input id="saleNote" class="input" placeholder="Ej: entregado en la tarde">
+        </div>
+      </div>
+
+      <div class="split" style="margin-top:12px">
+        <button id="btnSaveSale" class="btn pri">Guardar venta</button>
+        <span class="muted" id="saleMsg"></span>
+      </div>
+
+      <div style="margin-top:14px" class="notice">
+        Tip: si es <b>crédito</b>, quedará saldo pendiente del cliente. Luego registras <b>abonos</b> en “Nuevo abono”.
+      </div>
+    </section>
+
+    <!-- PAYMENTS -->
+    <section id="viewPayments" class="card hidden">
+      <div class="split">
+        <div>
+          <h2>Nuevo abono</h2>
+          <div class="muted">Pagos parciales o totales a clientes con deuda.</div>
+        </div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div>
+          <label>Cliente</label>
+          <select id="payCustomer" class="input"></select>
+        </div>
+        <div>
+          <label>Monto abonado</label>
+          <input id="payAmount" class="input" type="number" min="1" step="1" placeholder="Ej: 2000">
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <label>Nota (opcional)</label>
+        <input id="payNote" class="input" placeholder="Ej: abonó en efectivo">
+      </div>
+
+      <div class="split" style="margin-top:12px">
+        <button id="btnSavePayment" class="btn pri">Guardar abono</button>
+        <span class="muted" id="payMsg"></span>
+      </div>
+
+      <div style="margin-top:14px" class="notice" id="payInfo"></div>
+    </section>
+
+    <!-- ROUTES -->
+    <section id="viewRoutes" class="card hidden">
+      <div class="split">
+        <div>
+          <h2>Rutas</h2>
+          <div class="muted">Crea la ruta del día y marca estados por cliente.</div>
+        </div>
+        <button id="btnNewRoute" class="btn pri">+ Ruta manual</button>
+      </div>
+
+      <div id="routeBuilder" class="hidden" style="margin-top:12px">
+        <div class="two">
+          <div>
+            <label>Nombre ruta</label>
+            <input id="rName" class="input" placeholder="Ej: Ruta Mañana">
+          </div>
+          <div>
+            <label>Fecha</label>
+            <input id="rDate" class="input" type="date">
+          </div>
+        </div>
+
+        <div style="margin-top:10px" class="notice">
+          Selecciona clientes (recomendado: con deuda). Luego podrás ordenar y marcar estados.
+        </div>
+
+        <div style="margin-top:10px">
+          <label>Clientes (check)</label>
+          <div id="routeCustomerChecklist" class="card" style="padding:10px; background:rgba(17,24,39,.35)"></div>
+        </div>
+
+        <div class="split" style="margin-top:10px">
+          <button id="btnSaveRoute" class="btn pri">Guardar ruta</button>
+          <button id="btnCancelRoute" class="btn">Cancelar</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px; overflow:auto">
+        <table>
+          <thead>
+            <tr><th>Ruta</th><th>Fecha</th><th>Paradas</th><th>Estado</th><th></th></tr>
+          </thead>
+          <tbody id="routeTable"></tbody>
+        </table>
+      </div>
+
+      <div id="routeDetail" class="hidden" style="margin-top:12px">
+        <div class="split">
+          <h2 style="margin:0">Detalle de ruta</h2>
+          <button id="btnCloseRouteDetail" class="btn">Cerrar</button>
+        </div>
+        <div class="muted" id="routeDetailMeta"></div>
+        <div style="margin-top:10px; overflow:auto">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Cliente</th><th>Saldo</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody id="routeStopsTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAP -->
+    <section id="viewMap" class="card hidden">
+      <div class="split">
+        <div>
+          <h2>Mapa de cobros (Lorica)</h2>
+          <div class="muted">Mapa real + rutas + tracking. Requiere internet y API Key para calles/rutas.</div>
+        </div>
+        <div class="row" style="flex-wrap:wrap">
+          <button id="btnLocateMe" class="btn">📍 Mi ubicación</button>
+          <button id="btnBuildRoute" class="btn pri">🧭 Crear ruta</button>
+          <button id="btnSaveBuiltRoute" class="btn pri">💾 Guardar ruta</button>
+          <button id="btnLiveRoute" class="btn warn">🛰️ Live</button>
+          <button id="btnStopLive" class="btn bad">⛔ Stop</button>
+        </div>
+      </div>
+
+      <div id="mapNotice" class="notice" style="margin-top:10px"></div>
+
+      <div class="panel" id="mapRoutePanel">
+        <div class="panel-head">
+          <b>Clientes con deuda (selecciona para ruta)</b>
+          <span class="muted" id="routeSelMeta">0 seleccionados</span>
+        </div>
+        <div class="panel-body" id="routeSelectList"></div>
+      </div>
+
+      <div class="mapbox" style="margin-top:10px">
+        <div id="map" style="width:100%;height:100%;"></div>
+      </div>
+
+      <div style="margin-top:12px; overflow:auto">
+        <table>
+          <thead>
+            <tr><th>Cliente</th><th>Saldo</th><th>Dist.</th><th>Contacto</th><th></th></tr>
+          </thead>
+          <tbody id="mapCustomerTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- USERS (ADMIN) -->
+    <section id="viewUsers" class="card hidden">
+      <div class="split">
+        <div>
+          <h2>Vendedores (usuarios)</h2>
+          <div class="muted">Solo Admin. Crea/edita/elimina vendedores.</div>
+        </div>
+        <button id="btnNewUser" class="btn pri">+ Vendedor</button>
+      </div>
+
+      <div id="userForm" class="hidden" style="margin-top:12px">
+        <div class="two">
+          <div><label>Nombre</label><input id="uName" class="input"></div>
+          <div><label>Email</label><input id="uEmail" class="input" placeholder="vendedor@..."></div>
+        </div>
+        <div class="two" style="margin-top:10px">
+          <div><label>Contraseña</label><input id="uPass" class="input" type="password"></div>
+          <div>
+            <label>Activo</label>
+            <select id="uActive" class="input">
+              <option value="1">Sí</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="split" style="margin-top:10px">
+          <button id="btnSaveUser" class="btn pri">Guardar</button>
+          <button id="btnCancelUser" class="btn">Cancelar</button>
+          <button id="btnDeleteUser" class="btn bad right">Eliminar</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px; overflow:auto">
+        <table>
+          <thead><tr><th>Nombre</th><th>Email</th><th>Estado</th><th></th></tr></thead>
+          <tbody id="userTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CONFIG (ADMIN) -->
+    <section id="viewConfig" class="card hidden">
+      <h2>Configuración</h2>
+      <div class="muted">Pega tu <b>GOOGLE_MAPS_API_KEY</b> (para calles y rutas). Sin key, funciona con lista + GPS.</div>
+
+      <div style="margin-top:10px" class="two">
+        <div>
+          <label>GOOGLE_MAPS_API_KEY</label>
+          <input id="cfgMapsKey" class="input" placeholder="AIza...">
+        </div>
+        <div>
+          <label>Centro mapa (Lorica) Lat/Lng (opcional)</label>
+          <div class="two">
+            <input id="cfgCenterLat" class="input" placeholder="9.236">
+            <input id="cfgCenterLng" class="input" placeholder="-75.814">
+          </div>
+        </div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div>
+          <label>Modo Sync (opcional)</label>
+          <select id="cfgSyncMode" class="input">
+            <option value="local">Solo local (sin backend)</option>
+            <option value="supabase">Supabase (próximo paso)</option>
+          </select>
+        </div>
+        <div>
+          <label>Tracking guarda puntos (opcional)</label>
+          <select id="cfgTrackSave" class="input">
+            <option value="1">Sí</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div>
+          <label>SUPABASE_URL (opcional)</label>
+          <input id="cfgSbUrl" class="input" placeholder="https://xxxx.supabase.co">
+        </div>
+        <div>
+          <label>SUPABASE_ANON_KEY (opcional)</label>
+          <input id="cfgSbKey" class="input" placeholder="eyJ...">
+        </div>
+      </div>
+
+      <div class="split" style="margin-top:12px">
+        <button id="btnSaveConfig" class="btn pri">Guardar configuración</button>
+        <span id="cfgMsg" class="muted"></span>
+      </div>
+
+      <div style="margin-top:12px" class="notice">
+        <b>Recuerda:</b> Para rutas y calles reales debes habilitar en Google Cloud:
+        <b>Maps JavaScript API</b> y <b>Directions API</b>.
+      </div>
+    </section>
+  </main>
+
+  <nav id="bottomNav" class="hidden">
+    <button data-view="dash" class="active">Panel</button>
+    <button data-view="sales">Venta</button>
+    <button data-view="customers">Clientes</button>
+    <button data-view="map">Mapa</button>
+    <button data-view="more">Más</button>
+  </nav>
+
+  <script src="db.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
