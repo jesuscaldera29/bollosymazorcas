@@ -1,0 +1,16 @@
+{
+  "name": "BOLLOS_Y_MAZORCAS",
+  "short_name": "Bollos",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0f172a",
+  "description": "Ventas, créditos, rutas y mapa (offline-first)",
+  "icons": [
+    {
+      "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABWUlEQVR4nO3aMQ7CMBQF0OeK2Qm4gQfYgB3YgB3YgB3YgB1wCqJq0h1o0mQfJb2iQmVf7m0mJxw0n0p9f8QHc8y0gAAAAAAAAAAAAAAAHCwVq8XqvZ0o1m2m5b0p0r8Q3b1vQGk0o8aVb3HnYy3YvJ1tq0yGg1b9l3o+gqJm0wB0r8kQxg4m3l7xk8bqVqg8c1u0l8t9j7m2a8x6G2wYV0o9o5yqv0xq1l8xg3bV7C6G1y5o4n9b8c7Hf3xkQy0m8yQ0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gq0k8bU9gqAAAAAAAAAAAAAAAPgGmQy0bq2WQXwAAAABJRU5ErkJggg==",
+      "sizes": "64x64",
+      "type": "image/png"
+    }
+  ]
+}
